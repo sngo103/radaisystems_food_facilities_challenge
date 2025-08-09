@@ -1,0 +1,33 @@
+export type FoodFacility = {
+  locationId: string | number;
+  applicant: string;
+  facilityType: string;
+  cnn: string | number;
+  locationDescription: string;
+  address: string;
+  blockLot: string;
+  block: string | number;
+  lot: string | number;
+  permit: string;
+  status: string;
+  foodItems: string;
+  x: number | string;
+  y: number | string;
+  latitude: number | string;
+  longitude: number | string;
+  schedule: string;
+  daysHours: string;
+  noiSent: string;
+  approved: string;
+  received: string;
+  priorPermit: string;
+  expirationDate: string;
+  location: string;
+  firePreventionDistricts: string;
+  policeDistricts: string;
+  supervisorDistricts: string;
+  zipCodes: string;
+  oldNeighborhoods: string;
+};
+
+export type FoodFacilityList = FoodFacility[];
