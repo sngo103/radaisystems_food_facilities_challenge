@@ -1,33 +1,41 @@
 export type FoodFacility = {
-  locationId: string | number;
+  locationId: number;
   applicant: string;
   facilityType: string;
-  cnn: string | number;
+  cnn: number;
   locationDescription: string;
   address: string;
-  blockLot: string;
-  block: string | number;
-  lot: string | number;
+  blockLot: number;
+  block: number;
+  lot: number;
   permit: string;
   status: string;
   foodItems: string;
   x: number | string;
   y: number | string;
-  latitude: number | string;
-  longitude: number | string;
+  latitudeLongitude: number | string;
   schedule: string;
   daysHours: string;
   noiSent: string;
   approved: string;
-  received: string;
-  priorPermit: string;
+  received: number;
+  priorPermit: number;
   expirationDate: string;
   location: string;
-  firePreventionDistricts: string;
-  policeDistricts: string;
-  supervisorDistricts: string;
-  zipCodes: string;
-  oldNeighborhoods: string;
+  firePreventionDistricts: number;
+  policeDistricts: number;
+  supervisorDistricts: number;
+  zipCodes: number;
+  oldNeighborhoods: number;
 };
 
 export type FoodFacilityList = FoodFacility[];
+
+export enum PermitStatus {
+  APPROVED = "APPROVED",
+  REQUESTED = "REQUESTED",
+  EXPIRED = "EXPIRED",
+  SUSPEND = "SUSPEND",
+  ISSUED = "ISSUED",
+  ALL = "ALL"
+}

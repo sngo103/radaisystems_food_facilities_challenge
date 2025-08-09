@@ -2,7 +2,10 @@ import FoodTrucksGrid from "~/components/FoodTrucksGrid";
 import type { Route } from "./+types/home";
 import { useEffect, useState } from "react";
 import mobileFoodPermits from '~/data/mobile_food_facility_permits.csv?raw'
-import type { FoodFacility, FoodFacilityList } from "~/types/dataTypes";
+import { PermitStatus, type FoodFacility, type FoodFacilityList } from "~/types/dataTypes";
+import Fuse from 'fuse.js'
+import { buildFoodFacility } from "~/utils/dataUtils";
+import FoodTrucksSearch from "~/components/FoodTrucksSearch";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,48 +16,43 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const [facilitiesData, setFacilitiesData] = useState<FoodFacilityList>([]);
+  const [searchResults, setSearchResults] = useState<FoodFacilityList>([]);
 
   const readInFacilitiesData = () => {
     let data = mobileFoodPermits.split('\n')
+    const headers = data[0].split(',')
     data.shift(); // Remove header row
     let arrangedData: FoodFacilityList = []
-    data.forEach(item => {
+    for(const item of data) {
       let foodFacilityData = item.split(',')
-      let newFoodFacility: FoodFacility = {
-        locationId: foodFacilityData[0],
-        applicant: foodFacilityData[1],
-        facilityType: foodFacilityData[2],
-        cnn: foodFacilityData[3],
-        locationDescription: foodFacilityData[4],
-        address: foodFacilityData[5],
-        blockLot: foodFacilityData[6],
-        block: foodFacilityData[7],
-        lot: foodFacilityData[8],
-        permit: foodFacilityData[9],
-        status: foodFacilityData[10],
-        foodItems: foodFacilityData[11],
-        x: foodFacilityData[12],
-        y: foodFacilityData[13],
-        latitude: foodFacilityData[14],
-        longitude: foodFacilityData[15],
-        schedule: foodFacilityData[16],
-        daysHours: foodFacilityData[17],
-        noiSent: foodFacilityData[18],
-        approved: foodFacilityData[19],
-        received: foodFacilityData[20],
-        priorPermit: foodFacilityData[21],
-        expirationDate: foodFacilityData[22],
-        location: foodFacilityData[23],
-        firePreventionDistricts: foodFacilityData[24],
-        policeDistricts: foodFacilityData[25],
-        supervisorDistricts: foodFacilityData[26],
-        zipCodes: foodFacilityData[27],
-        oldNeighborhoods: foodFacilityData[28]
+      if(foodFacilityData.length > headers.length + 2){
+        continue; // Skip rows that do not match the expected number of columns
       }
-      arrangedData.push(newFoodFacility)
-    })
+      try {
+        let newFoodFacility = buildFoodFacility(foodFacilityData);
+        arrangedData.push(newFoodFacility);
+      } catch (error) {
+        // console.error("Error parsing food facility data:", error);
+        continue;
+      }
+    }
     setFacilitiesData([...facilitiesData, ...arrangedData]);
   }
+
+  const handleFuzzySearch = (query: string, keys: string[], status: PermitStatus) => {
+    let filteredData = facilitiesData;
+    if(status != PermitStatus.ALL){
+      filteredData = facilitiesData.filter(facility => facility.status === status);
+    }
+
+    const fuse = new Fuse(filteredData, {
+      keys: keys,
+      includeScore: true,
+    });
+    const results = fuse.search(query);
+    // console.log("Search results:", results);
+    setSearchResults(results.map((result) => result.item));
+  };
 
   useEffect(() => {
     readInFacilitiesData() 
@@ -63,11 +61,12 @@ export default function Home() {
   return (
     <div>
       <div className="container mx-auto px-4 mt-8">
-        <p className="font-sans text-6xl text-center">
+        <p className="font-sans text-6xl">
         {'Food Truck Finder'}
         </p>
       </div>
-      <FoodTrucksGrid facilitiesData={facilitiesData} />
+      <FoodTrucksSearch handleSearch={handleFuzzySearch} />
+      <FoodTrucksGrid facilitiesData={searchResults.length > 0 ? searchResults : facilitiesData} />
     </div>
   );
 }
