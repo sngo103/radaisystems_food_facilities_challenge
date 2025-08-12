@@ -5,7 +5,7 @@
 **Solution:** We establish a React app to easily modularize, update, and render components for the users. First, we want to clean the dataset to ensure users see accurate data. Some rows in the dataset were malformed and/or not in the correct order. We clean the dataset by parsing reading in the CSV as a dictionary and discarding rows that are malformed. Then, we can pass each of these rows to a React table that will format them as neat rows with horizontal scroll since there are many columns. We create an search field for the user and use Fuse.js, a fuzzy search library, that will allow us to search through specific columns in the rows. Lastly, we style the app using TailwindCSS, which allows us to easily style as we build without having to keep track of all the custom css classes.
 
 **_IMPORTANT THINGS TO NOTE:_**
-- Malformed rows, such as rows with data in the incorrect order and rows with applicant names containing commas(that disrupt the csv parsing) are ignored and not included in the data displayed.
+- Malformed rows, such as rows with data in the incorrect order and rows with applicant names containing commas(that disrupt the csv parsing), are ignored and not included in the data displayed.
 - I chose TailwindCSS to better demonstrate my frontend functionality capabilities for search. I could have easily used a component library such as Material UI that would provide me with a component with built-in search and would have probably chosen to do so if this were a real project.
 - I chose a simple UI given the desired functionality and the working period of a few hours. If there were more user flows, I would have chosen to create a more complex application with nicer UI that would be more appealing to the user.
 
