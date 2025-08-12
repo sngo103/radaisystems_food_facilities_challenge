@@ -17,6 +17,7 @@ export function meta({}: Route.MetaArgs) {
 export default function Home() {
   const [facilitiesData, setFacilitiesData] = useState<FoodFacilityList>([]);
   const [searchResults, setSearchResults] = useState<FoodFacilityList>([]);
+  const [noSearchResults, setNoSearchResults] = useState(false);
 
   const readInFacilitiesData = () => {
     let data = mobileFoodPermits.split('\n')
@@ -51,7 +52,12 @@ export default function Home() {
     });
     const results = fuse.search(query);
     // console.log("Search results:", results);
-    setSearchResults(results.map((result) => result.item));
+    if (results.length === 0) {
+      setNoSearchResults(true);
+    } else {
+      setNoSearchResults(false);
+      setSearchResults(results.map((result) => result.item));
+    }
   };
 
   useEffect(() => {
@@ -66,6 +72,11 @@ export default function Home() {
         </p>
       </div>
       <FoodTrucksSearch handleSearch={handleFuzzySearch} />
+      <div className="container mx-auto px-4 mt-8">
+        <p className="font-sans text-xl">
+          {noSearchResults ? "No results found. Please try a different search." : ""}
+        </p>
+      </div>
       <FoodTrucksGrid facilitiesData={searchResults.length > 0 ? searchResults : facilitiesData} />
     </div>
   );

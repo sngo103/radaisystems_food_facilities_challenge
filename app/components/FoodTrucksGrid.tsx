@@ -48,6 +48,11 @@ export default function FoodTrucksGrid({ facilitiesData }: FoodTrucksGridProps) 
           ))}
         </tbody>
   </table>
+  <div className="container mx-auto px-4 mt-4">
+        <p className="font-sans text-l text-center">
+          End of table.
+      </p>
+  </div>
 </div>
-        );
+);
 }
